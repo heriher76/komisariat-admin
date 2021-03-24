@@ -26,7 +26,15 @@
             <br>
             <input type="file" name="file">
             <br>
-            <label>Jika Tidak Ingin Mengubah File, Jangan Upload Ulang Filenya</label>
+            <label>Jika Tidak Ingin Mengubah File, Jangan Upload</label>
+            <br>
+            @if($ebook->thumbnail != null)
+            File Sudah Ada: {{ $ebook->thumbnail }}
+            @endif
+            <br>
+            <input type="file" name="thumbnail">
+            <br>
+            <label>Jika Tidak Ingin Mengubah Thumbnail, Jangan Upload</label>
             <br>
             <button type="submit" class="btn btn-success">Simpan</button>
         </form>

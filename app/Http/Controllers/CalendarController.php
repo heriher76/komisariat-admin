@@ -39,13 +39,18 @@ class CalendarController extends Controller
     {
         $input = $request->all();
 
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['name'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+
         Calendar::create([
           'name' => $input['name'],
           'date' => $input['date'],
           'tempat' => $input['tempat'],
           'waktu' => $input['waktu'],
-          'description' => $input['description']
+          'description' => $input['description'],
+          'thumbnail' => $namaThumbnail
         ]);
+
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/agenda-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/calendar');
     }
@@ -86,13 +91,23 @@ class CalendarController extends Controller
         $input = $request->all();
 
         $event = Calendar::where('id', $id)->first();
+
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['name'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+        
+        if (!empty($event->thumbnail) && !empty($request->file('thumbnail'))) {
+          unlink(base_path().'/public/agenda-thumbnail/'.$event->thumbnail);
+        }
+
         $event->update([
           'name' => $input['name'],
           'date' => $input['date'],
           'tempat' => $input['tempat'],
           'waktu' => $input['waktu'],
-          'description' => $input['description']
+          'description' => $input['description'],
+          'thumbnail' => $namaThumbnail ?? $event->thumbnail
         ]);
+
+        ($request->file('thumbnail') != null && !empty($request->file('thumbnail'))) ? $request->file('thumbnail')->move(base_path().('/public/agenda-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/calendar');
     }
@@ -105,6 +120,12 @@ class CalendarController extends Controller
      */
     public function destroy($id)
     {
+        $agenda = Calendar::find($id);
+
+        if (isset($agenda->thumbnail)) {
+            unlink(base_path().'/public/agenda-thumbnail/'.$agenda->thumbnail);
+        }
+
         Calendar::destroy($id);
 
         return back();

@@ -8,7 +8,7 @@
         Tambah Info
       </div>
       <div class="card-body">
-        <form method="POST" action="{{ url('admin/info-training') }}">
+        <form method="POST" action="{{ url('admin/info-training') }}" enctype="multipart/form-data">
             {{ csrf_field() }}
             <input type="text" class="form-control" name="title" placeholder="Judul Info">
             <br>
@@ -22,6 +22,10 @@
             <br>
             <input type="text" class="form-control" name="url" placeholder="URL Detail Training">
             <br>
+            <label>Thumbnail</label>
+            <br>
+            <input type="file" name="thumbnail">
+            <br><br>
             <button type="submit" class="btn btn-success">Simpan</button>
         </form>
       </div>

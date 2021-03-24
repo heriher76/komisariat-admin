@@ -20,7 +20,13 @@
               <option value="Materi Wajib">Materi Wajib</option>
             </select>
             <br>
+            <label>File PDF</label>
+            <br>
             <input type="file" name="file">
+            <br><br>
+            <label>Thumbnail</label>
+            <br>
+            <input type="file" name="thumbnail">
             <br><br>
             <button type="submit" class="btn btn-success">Simpan</button>
         </form>

@@ -41,14 +41,19 @@ class EbookController extends Controller
 
         ($request->file('file') != null) ? $namaEbook = \Str::random(5).'-'.$input['name'].'.'.$request->file('file')->getClientOriginalExtension() : $namaEbook = null;
 
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['name'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+
         Ebook::create([
           'name' => $input['name'],
           'by' => $input['by'],
           'category' => $input['category'],
           'file' => $namaEbook,
+          'thumbnail' => $namaThumbnail
         ]);
 
         ($request->file('file') != null) ? $request->file('file')->move(base_path().('/public/ebooks'), $namaEbook) : null;
+
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/ebooks-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/ebook');
     }
@@ -90,25 +95,27 @@ class EbookController extends Controller
 
         $ebook = Ebook::where('id', $id)->first();
 
-        if($request->file('file') != null) {
-          ($request->file('file') != null) ? $namaEbook = \Str::random(5).'-'.$input['name'].'.'.$request->file('file')->getClientOriginalExtension() : $namaEbook = null;
-          if (isset($ebook->file)) {
-              unlink(base_path().'/public/ebooks/'.$ebook->file);
-          }
-          $ebook->update([
+        ($request->file('file') != null) ? $namaEbook = \Str::random(5).'-'.$input['name'].'.'.$request->file('file')->getClientOriginalExtension() : $namaEbook = null;
+
+        if (!empty($ebook->file) && !empty($request->file('file'))) {
+          unlink(base_path().'/public/ebooks/'.$ebook->file);
+        }
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['name'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+        
+        if (!empty($ebook->thumbnail) && !empty($request->file('thumbnail'))) {
+          unlink(base_path().'/public/ebooks-thumbnail/'.$ebook->thumbnail);
+        }
+
+        $ebook->update([
             'name' => $input['name'],
             'by' => $input['by'],
             'category' => $input['category'],
-            'file' => $namaEbook
-          ]);
-          ($request->file('file') != null) ? $request->file('file')->move(base_path().('/public/ebooks'), $namaEbook) : null;
-        }else{
-          $ebook->update([
-            'name' => $input['name'],
-            'by' => $input['by'],
-            'category' => $input['category']
-          ]);
-        }
+            'file' => $namaEbook ?? $ebook->file,
+            'thumbnail' => $namaThumbnail ?? $ebook->thumbnail
+        ]);
+        ($request->file('file') != null && !empty($request->file('file'))) ? $request->file('file')->move(base_path().('/public/ebooks'), $namaEbook) : null;
+
+        ($request->file('thumbnail') != null && !empty($request->file('thumbnail'))) ? $request->file('thumbnail')->move(base_path().('/public/ebooks-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/ebook');
     }
@@ -124,6 +131,9 @@ class EbookController extends Controller
         $ebook = Ebook::where('id', $id)->first();
         if (isset($ebook->file)) {
             unlink(base_path().'/public/ebooks/'.$ebook->file);
+        }
+        if (isset($ebook->thumbnail)) {
+            unlink(base_path().'/public/ebooks-thumbnail/'.$ebook->thumbnail);
         }
         $ebook->destroy($id);
 

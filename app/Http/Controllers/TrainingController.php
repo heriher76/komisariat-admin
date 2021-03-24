@@ -39,13 +39,18 @@ class TrainingController extends Controller
     {
         $input = $request->all();
 
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['title'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+
         InfoTraining::create([
           'title' => $input['title'],
           'date_start' => $input['date_start'],
           'date_end' => $input['date_end'],
           'province' => $input['province'],
-          'url' => $input['url']
+          'url' => $input['url'],
+          'thumbnail' => $namaThumbnail
         ]);
+
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/info-training-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/info-training');
     }
@@ -86,13 +91,23 @@ class TrainingController extends Controller
         $input = $request->all();
 
         $training = InfoTraining::where('id', $id)->first();
+
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['title'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+        
+        if (!empty($training->thumbnail) && !empty($request->file('thumbnail'))) {
+          unlink(base_path().'/public/info-training-thumbnail/'.$training->thumbnail);
+        }
+
         $training->update([
           'title' => $input['title'],
           'date_start' => $input['date_start'],
           'date_end' => $input['date_end'],
           'province' => $input['province'],
-          'url' => $input['url']
+          'url' => $input['url'],
+           'thumbnail' => $namaThumbnail
         ]);
+
+        ($request->file('thumbnail') != null && !empty($request->file('thumbnail'))) ? $request->file('thumbnail')->move(base_path().('/public/info-training-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/info-training');
     }
@@ -105,6 +120,12 @@ class TrainingController extends Controller
      */
     public function destroy($id)
     {
+        $info = InfoTraining::find($id);
+
+        if (isset($info->thumbnail)) {
+            unlink(base_path().'/public/info-training-thumbnail/'.$info->thumbnail);
+        }
+
         InfoTraining::destroy($id);
 
         return back();
