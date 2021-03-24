@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function () use ($router) {
   Route::resource('/admin/ebook', 'EbookController');
   Route::resource('/admin/info-training', 'TrainingController');
   Route::resource('/admin/database-kader', 'DatabaseKaderController');
+  Route::resource('/admin/yt-channels', 'YtChannelController');
   Route::get('/admin/profile', 'ProfileController@index');
   Route::put('/admin/profile', 'ProfileController@update');
 });

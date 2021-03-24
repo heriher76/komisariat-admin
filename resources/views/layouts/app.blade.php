@@ -81,6 +81,11 @@
           <i class="fas fa-fw fa-users"></i>
           <span>Database Kader</span></a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url('/admin/yt-channels') }}">
+          <i class="fas fa-fw fa-tv"></i>
+          <span>Youtube Channel</span></a>
+      </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">

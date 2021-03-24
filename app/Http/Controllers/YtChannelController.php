@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\InfoTraining;
+use App\YtChannel;
 
-class TrainingController extends Controller
+class YtChannelController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,9 @@ class TrainingController extends Controller
      */
     public function index()
     {
-        $trainings = InfoTraining::orderBy('created_at', 'DESC')->get();
+        $channels = YtChannel::orderBy('created_at', 'DESC')->get();
 
-        return view('info-training.index', compact('trainings'));
+        return view('yt-channel.index', compact('channels'));
     }
 
     /**
@@ -26,7 +26,7 @@ class TrainingController extends Controller
      */
     public function create()
     {
-        return view('info-training.create');
+        return view('yt-channel.create');
     }
 
     /**
@@ -41,18 +41,15 @@ class TrainingController extends Controller
 
         ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['title'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
 
-        InfoTraining::create([
+        YtChannel::create([
           'title' => $input['title'],
-          'date_start' => $input['date_start'],
-          'date_end' => $input['date_end'],
-          'province' => $input['province'],
           'url' => $input['url'],
           'thumbnail' => $namaThumbnail
         ]);
 
-        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/info-training-thumbnail'), $namaThumbnail) : null;
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/yt-channel-thumbnail'), $namaThumbnail) : null;
 
-        return redirect('/admin/info-training');
+        return redirect('/admin/yt-channels');
     }
 
     /**
@@ -63,9 +60,9 @@ class TrainingController extends Controller
      */
     public function show($id)
     {
-        $training = InfoTraining::where('id', $id)->first();
+        $channel = YtChannel::where('id', $id)->first();
 
-        return view('info-training.edit', compact('training'));
+        return view('yt-channel.edit', compact('channel'));
     }
 
     /**
@@ -90,26 +87,23 @@ class TrainingController extends Controller
     {
         $input = $request->all();
 
-        $training = InfoTraining::where('id', $id)->first();
+        $channel = YtChannel::where('id', $id)->first();
 
         ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['title'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
         
-        if (!empty($training->thumbnail) && !empty($request->file('thumbnail'))) {
-          unlink(base_path().'/public/info-training-thumbnail/'.$training->thumbnail);
+        if (!empty($channel->thumbnail) && !empty($request->file('thumbnail'))) {
+          unlink(base_path().'/public/yt-channel-thumbnail/'.$channel->thumbnail);
         }
 
-        $training->update([
+        $channel->update([
           'title' => $input['title'],
-          'date_start' => $input['date_start'],
-          'date_end' => $input['date_end'],
-          'province' => $input['province'],
           'url' => $input['url'],
-          'thumbnail' => $namaThumbnail ?? $training->thumbnail
+          'thumbnail' => $namaThumbnail ?? $channel->thumbnail
         ]);
 
-        ($request->file('thumbnail') != null && !empty($request->file('thumbnail'))) ? $request->file('thumbnail')->move(base_path().('/public/info-training-thumbnail'), $namaThumbnail) : null;
+        ($request->file('thumbnail') != null && !empty($request->file('thumbnail'))) ? $request->file('thumbnail')->move(base_path().('/public/yt-channel-thumbnail'), $namaThumbnail) : null;
 
-        return redirect('/admin/info-training');
+        return redirect('/admin/yt-channels');
     }
 
     /**
@@ -120,13 +114,13 @@ class TrainingController extends Controller
      */
     public function destroy($id)
     {
-        $info = InfoTraining::find($id);
+        $info = YtChannel::find($id);
 
         if (isset($info->thumbnail)) {
-            unlink(base_path().'/public/info-training-thumbnail/'.$info->thumbnail);
+            unlink(base_path().'/public/yt-channel-thumbnail/'.$info->thumbnail);
         }
 
-        InfoTraining::destroy($id);
+        YtChannel::destroy($id);
 
         return back();
     }
