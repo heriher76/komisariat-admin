@@ -113,9 +113,9 @@ class EbookController extends Controller
             'file' => $namaEbook ?? $ebook->file,
             'thumbnail' => $namaThumbnail ?? $ebook->thumbnail
         ]);
-        ($request->file('file') != null && !empty($request->file('file'))) ? $request->file('file')->move(base_path().('/public/ebooks'), $namaEbook) : null;
+        ($request->file('file') != null) ? $request->file('file')->move(base_path().('/public/ebooks'), $namaEbook) : null;
 
-        ($request->file('thumbnail') != null && !empty($request->file('thumbnail'))) ? $request->file('thumbnail')->move(base_path().('/public/ebooks-thumbnail'), $namaThumbnail) : null;
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/ebooks-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/ebook');
     }

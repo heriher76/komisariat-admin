@@ -20,6 +20,8 @@
               <option value="Materi Wajib" @if($ebook->category == 'Materi Wajib') selected @endif>Materi Wajib</option>
             </select>
             <br>
+            <label>File Ebook</label>
+            <br>
             @if($ebook->file != null)
             File Sudah Ada: {{ $ebook->file }}
             @endif
@@ -27,9 +29,11 @@
             <input type="file" name="file">
             <br>
             <label>Jika Tidak Ingin Mengubah File, Jangan Upload</label>
+            <br><br>
+            <label>Thumbnail</label>
             <br>
             @if($ebook->thumbnail != null)
-            File Sudah Ada: {{ $ebook->thumbnail }}
+              <img src="{{ url('ebooks-thumbnail/'.$ebook->thumbnail) }}" height="200px">
             @endif
             <br>
             <input type="file" name="thumbnail">

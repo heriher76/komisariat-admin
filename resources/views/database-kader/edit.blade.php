@@ -51,7 +51,9 @@
             @if(!empty($user->photo))
             <img src="{{ $user->photo }}" style="height: 100px;">
             @endif
+            <br>
             <label>Upload Photo, Jika Ingin Mengubah</label>
+            <br>
             <input type="file" name="photo">
             <br><br>
             <button type="submit" class="btn btn-success">Simpan</button>

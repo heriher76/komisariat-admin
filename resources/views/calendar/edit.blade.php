@@ -21,8 +21,10 @@
             <br>
             <textarea name="description" class="form-control" placeholder="Deskripsi">{{ $event->description }}</textarea>
             <br>
+            <label>Thumbnail</label>
+            <br>
             @if($event->thumbnail != null)
-            File Sudah Ada: {{ $event->thumbnail }}
+              <img src="{{ url('agenda-thumbnail/'.$event->thumbnail) }}" height="200px">
             @endif
             <br>
             <input type="file" name="thumbnail">

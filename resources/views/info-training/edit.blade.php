@@ -23,8 +23,10 @@
             <br>
             <input type="text" class="form-control" name="url" placeholder="URL Detail Training" value="{{$training->url}}">
             <br>
+            <label>Thumbnail</label>
+            <br>
             @if($training->thumbnail != null)
-            File Sudah Ada: {{ $training->thumbnail }}
+              <img src="{{ url('info-training-thumbnail/'.$training->thumbnail) }}" height="200px">
             @endif
             <br>
             <input type="file" name="thumbnail">

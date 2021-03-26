@@ -39,10 +39,15 @@ class StructureOrganizationController extends Controller
     {
         $input = $request->all();
 
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['name'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+
         StructureOrganization::create([
           'name' => $input['name'],
-          'position' => $input['position']
+          'position' => $input['position'],
+          'thumbnail' => $namaThumbnail
         ]);
+
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/pengurus-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/structure');
     }
@@ -83,10 +88,20 @@ class StructureOrganizationController extends Controller
         $input = $request->all();
 
         $person = StructureOrganization::where('id', $id)->first();
+        
+        ($request->file('thumbnail') != null) ? $namaThumbnail = \Str::random(5).'-'.$input['name'].'.'.$request->file('thumbnail')->getClientOriginalExtension() : $namaThumbnail = null;
+        
+        if (!empty($request->file('thumbnail')) && !empty($person->thumbnail)) {
+          unlink(base_path().'/public/pengurus-thumbnail/'.$ebook->thumbnail);
+        }
+        
         $person->update([
           'name' => $input['name'],
-          'position' => $input['position']
+          'position' => $input['position'],
+          'thumbnail' => $namaThumbnail ?? $person->thumbnail
         ]);
+
+        ($request->file('thumbnail') != null) ? $request->file('thumbnail')->move(base_path().('/public/pengurus-thumbnail'), $namaThumbnail) : null;
 
         return redirect('/admin/structure');
     }
@@ -99,7 +114,13 @@ class StructureOrganizationController extends Controller
      */
     public function destroy($id)
     {
-        StructureOrganization::destroy($id);
+        $person = StructureOrganization::where('id', $id)->first();
+        
+        if (isset($person->thumbnail)) {
+            unlink(base_path().'/public/pengurus-thumbnail/'.$person->thumbnail);
+        }
+
+        $person->destroy($id);
 
         return back();
     }
